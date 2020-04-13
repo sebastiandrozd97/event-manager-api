@@ -1,4 +1,5 @@
 ﻿using EventmanagerApi.Data;
+using EventmanagerApi.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,8 @@ namespace EventmanagerApi.Installers
         {
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
+
+            services.AddSingleton<IOrganizedEventService, OrganizedEventService>();
         }
     }
 }
