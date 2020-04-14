@@ -14,5 +14,11 @@
             public const string Update = Base + "/events/{eventId}";
             public const string Delete = Base + "/events/{eventId}";
         }
+        
+        public static class Identity
+        {
+            public const string Login = Base + "/identity/login";
+            public const string Register = Base + "/identity/register";
+        }
     }
 }

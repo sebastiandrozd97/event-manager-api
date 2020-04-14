@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 using EventmanagerApi.Options;
+using EventmanagerApi.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
@@ -18,6 +19,8 @@ namespace EventmanagerApi.Installers
             var jwtOptions = new JwtOptions();
             configuration.Bind(nameof(jwtOptions), jwtOptions);
             services.AddSingleton(jwtOptions);
+
+            services.AddScoped<IIdentityService, IdentityService>();
 
             services.AddAuthentication(option =>
             {
