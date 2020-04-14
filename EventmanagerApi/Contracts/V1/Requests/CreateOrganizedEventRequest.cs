@@ -4,6 +4,6 @@ namespace EventmanagerApi.Contracts.V1.Requests
 {
     public class CreateOrganizedEventRequest
     {
-        public Guid Id { get; set; }
+        public string Title { get; set; }
     }
 }

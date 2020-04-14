@@ -13,7 +13,7 @@ namespace EventmanagerApi.Installers
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddSingleton<IOrganizedEventService, OrganizedEventService>();
+            services.AddScoped<IOrganizedEventService, OrganizedEventService>();
         }
     }
 }

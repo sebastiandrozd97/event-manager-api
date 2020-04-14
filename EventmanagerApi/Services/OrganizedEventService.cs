@@ -1,62 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using EventmanagerApi.Data;
 using EventmanagerApi.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventmanagerApi.Services
 {
     public class OrganizedEventService : IOrganizedEventService
     {
-        private readonly List<OrganizedEvent> _organizedEvents;
+        private readonly DataContext _dataContext;
 
-        public OrganizedEventService()
+        public OrganizedEventService(DataContext dataContext)
         {
-            _organizedEvents = new List<OrganizedEvent>();
-            for (int i = 0; i < 5; i++)
-            {
-                _organizedEvents.Add(new OrganizedEvent
-                {
-                    Id = Guid.NewGuid(),
-                    Title = $"Event title {i+1}"
-                });
-            }
+            _dataContext = dataContext;
         }
         
-        public List<OrganizedEvent> GetEvents()
+        public async Task<List<OrganizedEvent>> GetEventsAsync()
         {
-            return _organizedEvents;
+            return await _dataContext.OrganizedEvents.ToListAsync();
         }
 
-        public OrganizedEvent GetEventById(Guid eventId)
+        public async Task<OrganizedEvent> GetEventByIdAsync(Guid eventId)
         {
-            return _organizedEvents.SingleOrDefault(x => x.Id == eventId);
+            return await _dataContext.OrganizedEvents.SingleOrDefaultAsync(x => x.Id == eventId);
         }
 
-        public bool UpdateEvent(OrganizedEvent eventToUpdate)
+        public async Task<bool> CreateEventAsync(OrganizedEvent organizedEvent)
         {
-            var exists = GetEventById(eventToUpdate.Id) != null;
-
-            if (!exists)
-            {
-                return false;
-            }
-
-            var index = _organizedEvents.FindIndex(x => x.Id == eventToUpdate.Id);
-            _organizedEvents[index] = eventToUpdate;
-            return true;
+            await _dataContext.OrganizedEvents.AddAsync(organizedEvent);
+            var created = await _dataContext.SaveChangesAsync();
+            return created > 0;
         }
 
-        public bool DeleteEvent(Guid eventId)
+        public async Task<bool> UpdateEventAsync(OrganizedEvent eventToUpdate)
         {
-            var organizedEvent = GetEventById(eventId);
+            _dataContext.OrganizedEvents.Update(eventToUpdate);
+            var updated = await _dataContext.SaveChangesAsync();
+            return updated > 0;
+        }
+
+        public async Task<bool> DeleteEventAsync(Guid eventId)
+        {
+            var organizedEvent = await GetEventByIdAsync(eventId);
 
             if (organizedEvent == null)
             {
                 return false;
             }
-            
-            _organizedEvents.Remove(organizedEvent);
-            return true;
+
+            _dataContext.OrganizedEvents.Remove(organizedEvent);
+            var deleted = await _dataContext.SaveChangesAsync();
+            return deleted > 0;
         }
     }
 }

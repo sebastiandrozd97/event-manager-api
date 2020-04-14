@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using EventmanagerApi.Domain;
 
 namespace EventmanagerApi.Services
 {
     public interface IOrganizedEventService
     {
-        List<OrganizedEvent> GetEvents();
+        Task<List<OrganizedEvent>> GetEventsAsync();
 
-        OrganizedEvent GetEventById(Guid eventId);
+        Task<OrganizedEvent> GetEventByIdAsync(Guid eventId);
 
-        bool UpdateEvent(OrganizedEvent eventToUpdate);
+        Task<bool> CreateEventAsync(OrganizedEvent organizedEvent);
+
+        Task<bool> UpdateEventAsync(OrganizedEvent eventToUpdate);
         
-        bool DeleteEvent(Guid eventId);
+        Task<bool> DeleteEventAsync(Guid eventId);
     }
 }

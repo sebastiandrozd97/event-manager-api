@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EventmanagerApi.Domain;
+using Microsoft.EntityFrameworkCore;
 
 namespace EventmanagerApi.Data
 {
@@ -8,5 +9,7 @@ namespace EventmanagerApi.Data
 			: base(options)
 		{
 		}
+		
+		public DbSet<OrganizedEvent> OrganizedEvents { get; set; }
 	}
 }

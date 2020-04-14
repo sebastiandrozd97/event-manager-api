@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests;
 using EventmanagerApi.Contracts.V1.Responses;
@@ -19,15 +20,15 @@ namespace EventmanagerApi.Controllers.V1
        }
         
         [HttpGet(ApiRoutes.OrganizedEvents.GetAll)]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_organizedEventService.GetEvents());
+            return Ok(await _organizedEventService.GetEventsAsync());
         }
         
         [HttpGet(ApiRoutes.OrganizedEvents.Get)]
-        public IActionResult Get([FromRoute] Guid eventId)
+        public async Task<IActionResult> Get([FromRoute] Guid eventId)
         {
-            var organizedEvent = _organizedEventService.GetEventById(eventId);
+            var organizedEvent = await _organizedEventService.GetEventByIdAsync(eventId);
 
             if (organizedEvent == null)
             {
@@ -38,16 +39,11 @@ namespace EventmanagerApi.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.OrganizedEvents.Create)]
-        public IActionResult Create([FromBody] CreateOrganizedEventRequest organizedEventRequest)
+        public async Task<IActionResult> Create([FromBody] CreateOrganizedEventRequest organizedEventRequest)
         {
-            var organizedEvent = new OrganizedEvent{Id = organizedEventRequest.Id};
-            
-            if (organizedEvent.Id != Guid.Empty)
-            {
-                organizedEvent.Id = Guid.NewGuid();
-            }
-            
-            _organizedEventService.GetEvents().Add(organizedEvent);
+            var organizedEvent = new OrganizedEvent{Title = organizedEventRequest.Title};
+
+            await _organizedEventService.CreateEventAsync(organizedEvent);
 
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.OrganizedEvents.Get.Replace("{eventId}", organizedEvent.Id.ToString());
@@ -57,7 +53,7 @@ namespace EventmanagerApi.Controllers.V1
         }
         
         [HttpPut(ApiRoutes.OrganizedEvents.Update)]
-        public IActionResult Update([FromRoute] Guid eventId, [FromBody] UpdateOrganizedEventRequest request)
+        public async Task<IActionResult> Update([FromRoute] Guid eventId, [FromBody] UpdateOrganizedEventRequest request)
         {
             var organizedEvent = new OrganizedEvent
             {
@@ -65,7 +61,7 @@ namespace EventmanagerApi.Controllers.V1
                 Title = request.Title
             };
 
-            var updated = _organizedEventService.UpdateEvent(organizedEvent);
+            var updated = await _organizedEventService.UpdateEventAsync(organizedEvent);
 
             if (updated)
             {
@@ -76,9 +72,9 @@ namespace EventmanagerApi.Controllers.V1
         }
 
         [HttpDelete(ApiRoutes.OrganizedEvents.Delete)]
-        public IActionResult Delete([FromRoute] Guid eventId)
+        public async Task<IActionResult> Delete([FromRoute] Guid eventId)
         {
-            var deleted = _organizedEventService.DeleteEvent(eventId);
+            var deleted = await _organizedEventService.DeleteEventAsync(eventId);
 
             if (deleted)
             {
