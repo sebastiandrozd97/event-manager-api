@@ -16,5 +16,6 @@ namespace EventmanagerApi.Services
         Task<bool> UpdateEventAsync(OrganizedEvent eventToUpdate);
         
         Task<bool> DeleteEventAsync(Guid eventId);
+        Task<bool> UserOwnsEventAsync(Guid eventId, string userId);
     }
 }

@@ -4,6 +4,7 @@ using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests;
 using EventmanagerApi.Contracts.V1.Responses;
 using EventmanagerApi.Domain;
+using EventmanagerApi.Extensions;
 using EventmanagerApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,11 @@ namespace EventmanagerApi.Controllers.V1
         [HttpPost(ApiRoutes.OrganizedEvents.Create)]
         public async Task<IActionResult> Create([FromBody] CreateOrganizedEventRequest organizedEventRequest)
         {
-            var organizedEvent = new OrganizedEvent{Title = organizedEventRequest.Title};
+            var organizedEvent = new OrganizedEvent
+            {
+                Title = organizedEventRequest.Title,
+                UserId = HttpContext.GetUserId()
+            };
 
             await _organizedEventService.CreateEventAsync(organizedEvent);
 
@@ -58,11 +63,15 @@ namespace EventmanagerApi.Controllers.V1
         [HttpPut(ApiRoutes.OrganizedEvents.Update)]
         public async Task<IActionResult> Update([FromRoute] Guid eventId, [FromBody] UpdateOrganizedEventRequest request)
         {
-            var organizedEvent = new OrganizedEvent
+            var userOwnsEvent = await _organizedEventService.UserOwnsEventAsync(eventId, HttpContext.GetUserId());
+
+            if (!userOwnsEvent)
             {
-                Id = eventId,
-                Title = request.Title
-            };
+                return BadRequest(new {error = "You do not own this post"});
+            }
+
+            var organizedEvent = await _organizedEventService.GetEventByIdAsync(eventId);
+            organizedEvent.Title = request.Title;
 
             var updated = await _organizedEventService.UpdateEventAsync(organizedEvent);
 
@@ -77,6 +86,13 @@ namespace EventmanagerApi.Controllers.V1
         [HttpDelete(ApiRoutes.OrganizedEvents.Delete)]
         public async Task<IActionResult> Delete([FromRoute] Guid eventId)
         {
+            var userOwnsEvent = await _organizedEventService.UserOwnsEventAsync(eventId, HttpContext.GetUserId());
+
+            if (!userOwnsEvent)
+            {
+                return BadRequest(new {error = "You do not own this post"});
+            }
+            
             var deleted = await _organizedEventService.DeleteEventAsync(eventId);
 
             if (deleted)

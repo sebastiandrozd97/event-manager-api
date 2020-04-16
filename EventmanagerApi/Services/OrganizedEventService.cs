@@ -54,5 +54,22 @@ namespace EventmanagerApi.Services
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted > 0;
         }
+
+        public async Task<bool> UserOwnsEventAsync(Guid eventId, string userId)
+        {
+            var organizedEvent = await _dataContext.OrganizedEvents.AsNoTracking().SingleOrDefaultAsync(x => x.Id == eventId);
+
+            if (organizedEvent == null)
+            {
+                return false;
+            }
+
+            if (organizedEvent.UserId != userId)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }

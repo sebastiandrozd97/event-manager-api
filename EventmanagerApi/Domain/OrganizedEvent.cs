@@ -35,10 +35,10 @@ namespace EventmanagerApi.Domain
         
         public ICollection<Participant> Participants { get; set; }
             = new List<Participant>();
+        
+        public string UserId { get; set; }
 
         [ForeignKey("UserId")]
         public ApplicationUser User { get; set; }
-
-        public string UserId { get; set; }
     }
 }
