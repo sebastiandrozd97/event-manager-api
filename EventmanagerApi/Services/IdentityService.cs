@@ -37,6 +37,7 @@ namespace EventmanagerApi.Services
             var newUser = new ApplicationUser
             {
                 Email = email,
+                UserName = email,
                 FirstName = "User"
             };
 
@@ -45,7 +46,7 @@ namespace EventmanagerApi.Services
             if (!createdUser.Succeeded)
             {
                 return new AuthenticationResult
-                {
+                { 
                     Errors = createdUser.Errors.Select(x => x.Description)
                 };
             }
@@ -59,7 +60,7 @@ namespace EventmanagerApi.Services
                     new Claim(JwtRegisteredClaimNames.Sub, newUser.Email),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                     new Claim(JwtRegisteredClaimNames.Email, newUser.Email),
-                    new Claim("id", newUser.Id), 
+                    new Claim("id", newUser.Id)
                 }),
                 Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

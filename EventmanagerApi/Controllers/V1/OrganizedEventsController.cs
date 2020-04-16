@@ -5,11 +5,14 @@ using EventmanagerApi.Contracts.V1.Requests;
 using EventmanagerApi.Contracts.V1.Responses;
 using EventmanagerApi.Domain;
 using EventmanagerApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventmanagerApi.Controllers.V1
 {
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrganizedEventsController : ControllerBase
     {
         private readonly IOrganizedEventService _organizedEventService;

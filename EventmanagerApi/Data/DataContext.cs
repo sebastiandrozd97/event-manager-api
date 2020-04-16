@@ -18,8 +18,6 @@ namespace EventmanagerApi.Data
 		{
 			base.OnModelCreating(modelBuilder);
 			modelBuilder.Entity<ApplicationUser>().Ignore(c => c.AccessFailedCount)
-				.Ignore(c => c.UserName)
-				.Ignore(c => c.NormalizedUserName)
 				.Ignore(c => c.EmailConfirmed)
 				.Ignore(c => c.SecurityStamp)
 				.Ignore(c => c.ConcurrencyStamp)
