@@ -13,10 +13,10 @@ namespace EventmanagerApi.Domain
         public string Name { get; set; }
 
         public double Cost { get; set; }
+
+        public Guid EventId { get; set; }
         
         [ForeignKey("EventId")]
         public OrganizedEvent OrganizedEvent { get; set; }
-
-        public Guid EventId { get; set; }
     }
 }

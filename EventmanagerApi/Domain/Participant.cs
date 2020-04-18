@@ -16,9 +16,9 @@ namespace EventmanagerApi.Domain
         [Required]
         public string Status { get; set; }
         
+        public Guid EventId { get; set; }
+        
         [ForeignKey("EventId")]
         public OrganizedEvent OrganizedEvent { get; set; }
-
-        public Guid EventId { get; set; }
     }
 }
