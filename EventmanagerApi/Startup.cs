@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EventmanagerApi.Data;
 using EventmanagerApi.Installers;
 using EventmanagerApi.Options;
@@ -31,6 +32,7 @@ namespace EventmanagerApi
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.InstallServicesInAssembly(Configuration);
+			services.AddAutoMapper(typeof(Startup));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests;
 using EventmanagerApi.Contracts.V1.Responses;
@@ -20,26 +21,19 @@ namespace EventmanagerApi.Controllers.V1
     public class OrganizedEventsController : ControllerBase
     { 
         private readonly IOrganizedEventService _organizedEventService;
+        private readonly IMapper _mapper;
         
-        public OrganizedEventsController(IOrganizedEventService organizedEventService)
+        public OrganizedEventsController(IOrganizedEventService organizedEventService, IMapper mapper)
         {
             _organizedEventService = organizedEventService;
+            _mapper = mapper;
         }
         
         [HttpGet(ApiRoutes.OrganizedEvents.GetAll)]
         public async Task<IActionResult> GetAll()
         {
             var organizedEvents = await _organizedEventService.GetEventsAsync(HttpContext.GetUserId());
-            var organizedEventResponses = organizedEvents.Select(organizedEvent => new OrganizedEventResponse
-            {
-                Id = organizedEvent.Id,
-                Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse {Name = x.Name, Cost = x.Cost}).ToList(),
-                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse
-                    {Name = x.Name, Status = x.Status}).ToList(),
-                UserId = organizedEvent.UserId
-            }).ToList();
-            return Ok(organizedEventResponses);
+            return Ok(_mapper.Map<List<OrganizedEventResponse>>(organizedEvents));
         }
         
         [HttpGet(ApiRoutes.OrganizedEvents.Get)]
@@ -52,14 +46,7 @@ namespace EventmanagerApi.Controllers.V1
                 return NotFound();
             }
             
-            return Ok(new OrganizedEventResponse
-            {
-                Id = organizedEvent.Id,
-                Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
-                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
-                UserId = organizedEvent.UserId
-            });
+            return Ok(_mapper.Map<OrganizedEventResponse>(organizedEvent));
         }
 
         [HttpPost(ApiRoutes.OrganizedEvents.Create)]
@@ -80,15 +67,7 @@ namespace EventmanagerApi.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.OrganizedEvents.Get.Replace("{eventId}", organizedEvent.Id.ToString());
 
-            var response = new OrganizedEventResponse
-            {
-                Id = organizedEvent.Id,
-                Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
-                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
-                UserId = organizedEvent.UserId
-            };
-            return Created(locationUri, response);
+            return Created(locationUri, _mapper.Map<OrganizedEventResponse>(organizedEvent));
         }
         
         [HttpPut(ApiRoutes.OrganizedEvents.Update)]
@@ -113,14 +92,7 @@ namespace EventmanagerApi.Controllers.V1
 
             if (updated)
             {
-                return Ok(new OrganizedEventResponse
-                {
-                    Id = organizedEvent.Id,
-                    Title = organizedEvent.Title,
-                    Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
-                    Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
-                    UserId = organizedEvent.UserId
-                });
+                return Ok(_mapper.Map<OrganizedEventResponse>(organizedEvent));
             }
 
             return NotFound();
