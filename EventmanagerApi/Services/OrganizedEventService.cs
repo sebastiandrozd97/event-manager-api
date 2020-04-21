@@ -63,6 +63,13 @@ namespace EventmanagerApi.Services
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted > 0;
         }
+        
+//        public async Task<bool> Update(OrganizedEvent eventToUpdate)
+//        {
+//            _dataContext.OrganizedEvents.Update(eventToUpdate);
+//            var updated = await _dataContext.SaveChangesAsync();
+//            return updated > 0;
+//        }
 
         public async Task<bool> UserOwnsEventAsync(Guid eventId, string userId)
         {

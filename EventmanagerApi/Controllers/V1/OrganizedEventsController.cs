@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1;
@@ -32,9 +34,9 @@ namespace EventmanagerApi.Controllers.V1
             {
                 Id = organizedEvent.Id,
                 Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse {Name = x.Name, Cost = x.Cost}),
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse {Name = x.Name, Cost = x.Cost}).ToList(),
                 Participants = organizedEvent.Participants.Select(x => new ParticipantResponse
-                    {Name = x.Name, Status = x.Status}),
+                    {Name = x.Name, Status = x.Status}).ToList(),
                 UserId = organizedEvent.UserId
             }).ToList();
             return Ok(organizedEventResponses);
@@ -54,8 +56,8 @@ namespace EventmanagerApi.Controllers.V1
             {
                 Id = organizedEvent.Id,
                 Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
-                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
+                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
                 UserId = organizedEvent.UserId
             });
         }
@@ -82,8 +84,8 @@ namespace EventmanagerApi.Controllers.V1
             {
                 Id = organizedEvent.Id,
                 Title = organizedEvent.Title,
-                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
-                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
+                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
                 UserId = organizedEvent.UserId
             };
             return Created(locationUri, response);
@@ -101,6 +103,11 @@ namespace EventmanagerApi.Controllers.V1
 
             var organizedEvent = await _organizedEventService.GetEventByIdAsync(eventId);
             organizedEvent.Title = request.Title;
+            organizedEvent.Expenses = request.Expenses.Where(x => !string.IsNullOrWhiteSpace(x.Name))
+                .Select(x => new Expense {EventId = organizedEvent.Id, Name = x.Name, Cost = x.Cost}).ToList();
+            organizedEvent.Participants = request.Participants.Where(x => !string.IsNullOrWhiteSpace(x.Name))
+                .Select((x, y) => new Participant {EventId = organizedEvent.Id, Name = x.Name, Status = x.Status})
+                .ToList();
 
             var updated = await _organizedEventService.UpdateEventAsync(organizedEvent);
 
@@ -110,8 +117,8 @@ namespace EventmanagerApi.Controllers.V1
                 {
                     Id = organizedEvent.Id,
                     Title = organizedEvent.Title,
-                    Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
-                    Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                    Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}).ToList(),
+                    Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}).ToList(),
                     UserId = organizedEvent.UserId
                 });
             }

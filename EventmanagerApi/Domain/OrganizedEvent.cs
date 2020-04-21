@@ -31,10 +31,8 @@ namespace EventmanagerApi.Domain
         public double Lng { get; set; }
         
         public ICollection<Expense> Expenses { get; set; }
-            = new List<Expense>();
         
         public ICollection<Participant> Participants { get; set; }
-            = new List<Participant>();
         
         public string UserId { get; set; }
 
