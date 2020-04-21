@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests;
@@ -15,18 +16,28 @@ namespace EventmanagerApi.Controllers.V1
     [ApiController]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class OrganizedEventsController : ControllerBase
-    {
+    { 
         private readonly IOrganizedEventService _organizedEventService;
         
-       public OrganizedEventsController(IOrganizedEventService organizedEventService)
-       {
-           _organizedEventService = organizedEventService;
-       }
+        public OrganizedEventsController(IOrganizedEventService organizedEventService)
+        {
+            _organizedEventService = organizedEventService;
+        }
         
         [HttpGet(ApiRoutes.OrganizedEvents.GetAll)]
         public async Task<IActionResult> GetAll()
         {
-            return Ok(await _organizedEventService.GetEventsAsync());
+            var organizedEvents = await _organizedEventService.GetEventsAsync(HttpContext.GetUserId());
+            var organizedEventResponses = organizedEvents.Select(organizedEvent => new OrganizedEventResponse
+            {
+                Id = organizedEvent.Id,
+                Title = organizedEvent.Title,
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse {Name = x.Name, Cost = x.Cost}),
+                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse
+                    {Name = x.Name, Status = x.Status}),
+                UserId = organizedEvent.UserId
+            }).ToList();
+            return Ok(organizedEventResponses);
         }
         
         [HttpGet(ApiRoutes.OrganizedEvents.Get)]
@@ -39,16 +50,27 @@ namespace EventmanagerApi.Controllers.V1
                 return NotFound();
             }
             
-            return Ok(organizedEvent);
+            return Ok(new OrganizedEventResponse
+            {
+                Id = organizedEvent.Id,
+                Title = organizedEvent.Title,
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
+                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                UserId = organizedEvent.UserId
+            });
         }
 
         [HttpPost(ApiRoutes.OrganizedEvents.Create)]
         public async Task<IActionResult> Create([FromBody] CreateOrganizedEventRequest organizedEventRequest)
         {
+            var newEventId = Guid.NewGuid();
             var organizedEvent = new OrganizedEvent
             {
+                Id = newEventId,
                 Title = organizedEventRequest.Title,
-                UserId = HttpContext.GetUserId()
+                UserId = HttpContext.GetUserId(),
+                Expenses = organizedEventRequest.Expenses.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select(x => new Expense{EventId = newEventId, Name = x.Name, Cost = x.Cost}).ToList(),
+                Participants = organizedEventRequest.Participants.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select((x,y) => new Participant{EventId = newEventId, Name = x.Name, Status = x.Status}).ToList()
             };
 
             await _organizedEventService.CreateEventAsync(organizedEvent);
@@ -56,7 +78,14 @@ namespace EventmanagerApi.Controllers.V1
             var baseUrl = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.ToUriComponent()}";
             var locationUri = baseUrl + "/" + ApiRoutes.OrganizedEvents.Get.Replace("{eventId}", organizedEvent.Id.ToString());
 
-            var response = new OrganizedEventResponse {Id = organizedEvent.Id};
+            var response = new OrganizedEventResponse
+            {
+                Id = organizedEvent.Id,
+                Title = organizedEvent.Title,
+                Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
+                Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                UserId = organizedEvent.UserId
+            };
             return Created(locationUri, response);
         }
         
@@ -77,7 +106,14 @@ namespace EventmanagerApi.Controllers.V1
 
             if (updated)
             {
-                return Ok(organizedEvent);
+                return Ok(new OrganizedEventResponse
+                {
+                    Id = organizedEvent.Id,
+                    Title = organizedEvent.Title,
+                    Expenses = organizedEvent.Expenses.Select(x => new ExpenseResponse{Name = x.Name, Cost = x.Cost}),
+                    Participants = organizedEvent.Participants.Select(x => new ParticipantResponse{Name = x.Name, Status = x.Status}),
+                    UserId = organizedEvent.UserId
+                });
             }
 
             return NotFound();

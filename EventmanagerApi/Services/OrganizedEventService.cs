@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventmanagerApi.Data;
 using EventmanagerApi.Domain;
+using EventmanagerApi.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventmanagerApi.Services
@@ -17,14 +19,21 @@ namespace EventmanagerApi.Services
             _dataContext = dataContext;
         }
         
-        public async Task<List<OrganizedEvent>> GetEventsAsync()
+        public async Task<List<OrganizedEvent>> GetEventsAsync(string userId)
         {
-            return await _dataContext.OrganizedEvents.ToListAsync();
+            return await _dataContext.OrganizedEvents
+                .Where(x => x.UserId == userId)
+                .Include(x => x.Expenses)
+                .Include(x => x.Participants)
+                .ToListAsync();
         }
 
         public async Task<OrganizedEvent> GetEventByIdAsync(Guid eventId)
         {
-            return await _dataContext.OrganizedEvents.SingleOrDefaultAsync(x => x.Id == eventId);
+            return await _dataContext.OrganizedEvents
+                .Include(x => x.Expenses)
+                .Include(x => x.Participants)
+                .SingleOrDefaultAsync(x => x.Id == eventId);
         }
 
         public async Task<bool> CreateEventAsync(OrganizedEvent organizedEvent)

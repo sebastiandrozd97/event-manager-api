@@ -1,7 +1,11 @@
-﻿namespace EventmanagerApi.Contracts.V1.Requests
+﻿using System.Collections.Generic;
+
+namespace EventmanagerApi.Contracts.V1.Requests
 {
     public class UpdateOrganizedEventRequest
     {
         public string Title { get; set; }
+        public IEnumerable<CreateExpenseRequest> Expenses { get; set; }
+        public IEnumerable<CreateParticipantRequest> Participants { get; set; }
     }
 }

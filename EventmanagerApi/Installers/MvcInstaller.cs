@@ -44,7 +44,7 @@ namespace EventmanagerApi.Installers
                 option.SaveToken = true;
                 option.TokenValidationParameters = tokenValidationParameters;
             });
-
+            
             services.AddSwaggerGen(x =>
             {
                 x.SwaggerDoc("v1", new OpenApiInfo {Title = "Eventmanager API", Version = "v1"});

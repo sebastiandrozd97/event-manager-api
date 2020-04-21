@@ -7,7 +7,7 @@ namespace EventmanagerApi.Services
 {
     public interface IOrganizedEventService
     {
-        Task<List<OrganizedEvent>> GetEventsAsync();
+        Task<List<OrganizedEvent>> GetEventsAsync(string userId);
 
         Task<OrganizedEvent> GetEventByIdAsync(Guid eventId);
 
