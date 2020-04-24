@@ -1,4 +1,4 @@
-﻿namespace EventmanagerApi.Contracts.V1.Responses
+﻿namespace EventmanagerApi.Contracts.V1.Responses.EventResponses
 {
     public class ExpenseResponse
     {

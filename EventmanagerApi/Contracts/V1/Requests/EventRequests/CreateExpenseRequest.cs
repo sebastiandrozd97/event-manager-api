@@ -1,4 +1,4 @@
-﻿namespace EventmanagerApi.Contracts.V1.Requests
+﻿namespace EventmanagerApi.Contracts.V1.Requests.EventRequests
 {
     public class CreateExpenseRequest
     {

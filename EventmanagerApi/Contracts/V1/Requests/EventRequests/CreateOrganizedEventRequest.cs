@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using EventmanagerApi.Domain;
 
-namespace EventmanagerApi.Contracts.V1.Requests
+namespace EventmanagerApi.Contracts.V1.Requests.EventRequests
 {
     public class CreateOrganizedEventRequest
     {

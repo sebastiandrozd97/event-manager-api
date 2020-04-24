@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using EventmanagerApi.Domain;
 
-namespace EventmanagerApi.Contracts.V1.Responses
+namespace EventmanagerApi.Contracts.V1.Responses.EventResponses
 {
     public class OrganizedEventResponse
     {

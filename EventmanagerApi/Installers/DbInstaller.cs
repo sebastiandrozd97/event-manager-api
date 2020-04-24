@@ -20,6 +20,7 @@ namespace EventmanagerApi.Installers
                 .AddEntityFrameworkStores<DataContext>();
 
             services.AddScoped<IOrganizedEventService, OrganizedEventService>();
+            services.AddScoped<IUserService, UserService>();
         }
     }
 }

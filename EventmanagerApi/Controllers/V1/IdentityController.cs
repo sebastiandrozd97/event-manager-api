@@ -1,13 +1,14 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1;
-using EventmanagerApi.Contracts.V1.Requests;
-using EventmanagerApi.Contracts.V1.Responses;
+using EventmanagerApi.Contracts.V1.Requests.UserRequests;
+using EventmanagerApi.Contracts.V1.Responses.UserResponses;
 using EventmanagerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventmanagerApi.Controllers.V1
 {
+    [ApiController]
     public class IdentityController : ControllerBase
     {
         private readonly IIdentityService _identityService;

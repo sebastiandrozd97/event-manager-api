@@ -21,5 +21,12 @@
             public const string Register = Base + "/identity/register";
             public const string Refresh = Base + "/identity/refresh";
         }
+
+        public static class ApplicationUser
+        {
+            public const string Get = Base + "/user";
+            public const string Update = Base + "/user";
+            public const string ChangePassword = Base + "/user";
+        }
     }
 }

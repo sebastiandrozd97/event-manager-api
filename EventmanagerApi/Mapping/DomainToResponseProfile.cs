@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using AutoMapper;
-using EventmanagerApi.Contracts.V1.Responses;
+using EventmanagerApi.Contracts.V1.Responses.EventResponses;
+using EventmanagerApi.Contracts.V1.Responses.UserResponses;
 using EventmanagerApi.Domain;
 
 namespace EventmanagerApi.Mapping
@@ -13,6 +14,8 @@ namespace EventmanagerApi.Mapping
             
             CreateMap<Expense, ExpenseResponse>();
             CreateMap<Participant, ParticipantResponse>();
+
+            CreateMap<ApplicationUser, UserResponse>();
         }
     }
 }

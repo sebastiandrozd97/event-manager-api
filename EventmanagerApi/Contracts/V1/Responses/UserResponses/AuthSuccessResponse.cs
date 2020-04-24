@@ -1,6 +1,6 @@
-﻿namespace EventmanagerApi.Contracts.V1.Requests
+﻿namespace EventmanagerApi.Contracts.V1.Responses.UserResponses
 {
-    public class RefreshTokenRequest
+    public class AuthSuccessResponse
     {
         public string Token { get; set; }
         public string RefreshToken { get; set; }
