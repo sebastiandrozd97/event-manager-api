@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -50,17 +49,11 @@ namespace EventmanagerApi.Controllers.V1
         }
 
         [HttpPost(ApiRoutes.OrganizedEvents.Create)]
-        public async Task<IActionResult> Create([FromBody] CreateOrganizedEventRequest organizedEventRequest)
+        public async Task<IActionResult> Create([FromBody] OrganizedEventRequest request)
         {
-            var newEventId = Guid.NewGuid();
-            var organizedEvent = new OrganizedEvent
-            {
-                Id = newEventId,
-                Title = organizedEventRequest.Title,
-                UserId = HttpContext.GetUserId(),
-                Expenses = organizedEventRequest.Expenses.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select(x => new Expense{EventId = newEventId, Name = x.Name, Cost = x.Cost}).ToList(),
-                Participants = organizedEventRequest.Participants.Where(x => !string.IsNullOrWhiteSpace(x.Name)).Select((x,y) => new Participant{EventId = newEventId, Name = x.Name, Status = x.Status}).ToList()
-            };
+            var organizedEvent = _mapper.Map<OrganizedEvent>(request);
+
+            organizedEvent.UserId = HttpContext.GetUserId();
 
             await _organizedEventService.CreateEventAsync(organizedEvent);
 
@@ -71,7 +64,7 @@ namespace EventmanagerApi.Controllers.V1
         }
         
         [HttpPut(ApiRoutes.OrganizedEvents.Update)]
-        public async Task<IActionResult> Update([FromRoute] Guid eventId, [FromBody] UpdateOrganizedEventRequest request)
+        public async Task<IActionResult> Update([FromRoute] Guid eventId, [FromBody] OrganizedEventRequest request)
         {
             var userOwnsEvent = await _organizedEventService.UserOwnsEventAsync(eventId, HttpContext.GetUserId());
 
@@ -82,6 +75,15 @@ namespace EventmanagerApi.Controllers.V1
 
             var organizedEvent = await _organizedEventService.GetEventByIdAsync(eventId);
             organizedEvent.Title = request.Title;
+            organizedEvent.Slug = request.Slug;
+            organizedEvent.Description = request.Description;
+            organizedEvent.From = request.From;
+            organizedEvent.To = request.To;
+            organizedEvent.LastsOneDay = request.LastsOneDay;
+            organizedEvent.Address = request.Address;
+            organizedEvent.Place = request.Place;
+            organizedEvent.Lat = request.Lat;
+            organizedEvent.Lng = request.Lng;
             organizedEvent.Expenses = request.Expenses.Where(x => !string.IsNullOrWhiteSpace(x.Name))
                 .Select(x => new Expense {EventId = organizedEvent.Id, Name = x.Name, Cost = x.Cost}).ToList();
             organizedEvent.Participants = request.Participants.Where(x => !string.IsNullOrWhiteSpace(x.Name))

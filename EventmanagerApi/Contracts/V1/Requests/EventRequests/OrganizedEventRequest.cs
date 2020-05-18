@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace EventmanagerApi.Contracts.V1.Requests.EventRequests
 {
-    public class UpdateOrganizedEventRequest
+    public class OrganizedEventRequest
     {
         public string Title { get; set; }
         

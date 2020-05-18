@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests.UserRequests;
 using EventmanagerApi.Contracts.V1.Responses.UserResponses;
+using EventmanagerApi.Extensions;
 using EventmanagerApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,8 +42,7 @@ namespace EventmanagerApi.Controllers.V1
             
             return Ok(new AuthSuccessResponse
             {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
+                Token = authResponse.Token
             });
         }
         
@@ -58,32 +58,27 @@ namespace EventmanagerApi.Controllers.V1
                     Errors = authResponse.Errors
                 });
             }
-            
-            return Ok(new AuthSuccessResponse
-            {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
-            });
-        }
-        
-        [HttpPost(ApiRoutes.Identity.Refresh)]
-        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
-        {
-            var authResponse = await _identityService.RefreshTokenAsync(request.Token, request.RefreshToken);
 
-            if (!authResponse.Success)
+            var response = new AuthSuccessResponse
             {
-                return BadRequest(new AuthFailedResponse
-                {
-                    Errors = authResponse.Errors
-                });
+                Token = authResponse.Token
+            };
+
+            return Ok(response);
+        }
+
+        [HttpGet(ApiRoutes.Identity.LoggedIn)]
+        public async Task<bool> LoggedIn()
+        {
+            try
+            {
+                return await _identityService.UserLoggedInAsync(HttpContext.GetUserId());
+            }
+            catch
+            {
+                return false;
             }
             
-            return Ok(new AuthSuccessResponse
-            {
-                Token = authResponse.Token,
-                RefreshToken = authResponse.RefreshToken
-            });
         }
     }
 }

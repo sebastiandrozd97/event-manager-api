@@ -1,16 +1,13 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using EventmanagerApi.Contracts.V1;
 using EventmanagerApi.Contracts.V1.Requests.UserRequests;
 using EventmanagerApi.Contracts.V1.Responses.UserResponses;
-using EventmanagerApi.Domain;
 using EventmanagerApi.Extensions;
 using EventmanagerApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EventmanagerApi.Controllers.V1

@@ -1,21 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
-using EventmanagerApi.Data;
 using EventmanagerApi.Installers;
 using EventmanagerApi.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
 
 namespace EventmanagerApi
 {
@@ -54,6 +44,14 @@ namespace EventmanagerApi
 			app.UseSwaggerUI(option => { option.SwaggerEndpoint(swaggerOptions.UiEndpoint, swaggerOptions.Description); });
 
 			app.UseRouting();
+
+			app.UseCors(
+				builder => builder
+					.WithOrigins("http://localhost:8080")
+					.AllowCredentials()
+					.AllowAnyMethod()
+					.AllowAnyHeader()
+			);
 
 			app.UseAuthorization();
 

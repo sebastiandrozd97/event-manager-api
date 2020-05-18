@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using EventmanagerApi.Contracts.V1.Requests.UserRequests;
 using EventmanagerApi.Domain;
 using Microsoft.AspNetCore.Identity;

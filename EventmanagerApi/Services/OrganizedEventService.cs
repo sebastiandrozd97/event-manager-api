@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using EventmanagerApi.Data;
 using EventmanagerApi.Domain;
-using EventmanagerApi.Extensions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace EventmanagerApi.Services
@@ -25,6 +23,7 @@ namespace EventmanagerApi.Services
                 .Where(x => x.UserId == userId)
                 .Include(x => x.Expenses)
                 .Include(x => x.Participants)
+                .OrderByDescending(x => x.From)
                 .ToListAsync();
         }
 
@@ -63,13 +62,6 @@ namespace EventmanagerApi.Services
             var deleted = await _dataContext.SaveChangesAsync();
             return deleted > 0;
         }
-        
-//        public async Task<bool> Update(OrganizedEvent eventToUpdate)
-//        {
-//            _dataContext.OrganizedEvents.Update(eventToUpdate);
-//            var updated = await _dataContext.SaveChangesAsync();
-//            return updated > 0;
-//        }
 
         public async Task<bool> UserOwnsEventAsync(Guid eventId, string userId)
         {

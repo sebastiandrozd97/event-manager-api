@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using EventmanagerApi.Contracts.V1.Responses.EventResponses;
 using EventmanagerApi.Contracts.V1.Responses.UserResponses;
 using EventmanagerApi.Domain;
@@ -11,10 +10,8 @@ namespace EventmanagerApi.Mapping
         public DomainToResponseProfile()
         {
             CreateMap<OrganizedEvent, OrganizedEventResponse>();
-            
             CreateMap<Expense, ExpenseResponse>();
             CreateMap<Participant, ParticipantResponse>();
-
             CreateMap<ApplicationUser, UserResponse>();
         }
     }

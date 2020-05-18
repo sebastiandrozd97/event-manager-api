@@ -1,11 +1,14 @@
 ﻿using EventmanagerApi.Domain;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace EventmanagerApi.Data
 {
 	public class DataContext : DbContext
 	{
+		public static readonly ILoggerFactory MyLoggerFactory
+			= LoggerFactory.Create(builder => { builder.AddConsole(); });
+		
 		public DataContext(DbContextOptions<DataContext> options)
 			: base(options)
 		{
@@ -13,7 +16,11 @@ namespace EventmanagerApi.Data
 		
 		public DbSet<OrganizedEvent> OrganizedEvents { get; set; }
 		public DbSet<ApplicationUser> ApplicationUsers { get; set; }
-		public DbSet<RefreshToken> RefreshTokens { get; set; }
+		
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+			=> optionsBuilder
+				.UseLoggerFactory(MyLoggerFactory);
+
 		
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
