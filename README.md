@@ -1,2 +1,2 @@
 # Eventmanager API
-This is part of my Eventmanager application
+This is part of the Eventmanager application
